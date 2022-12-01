@@ -1,4 +1,9 @@
-def calories(file="input.txt"):
+from pathlib import Path
+
+def calories(file = None):
+    if not file:
+        file = Path(__file__).parent / "input.txt"
+
     elf_calories = [0]
     with open(file) as f:
         for line in f.readlines():
@@ -11,5 +16,8 @@ def calories(file="input.txt"):
     return elf_calories[0], sum(elf_calories[:3])
 
 
-assert calories("test.txt") == (24000, 45000)
-print("Most caloric Elf %d, Sum of top 3 %d" % calories())
+test_file = Path(__file__).parent / "test.txt"
+assert calories(test_file) == (24000, 45000)
+
+if __name__ == '__main__':
+    print("Most caloric Elf %d, Sum of top 3 %d" % calories())
