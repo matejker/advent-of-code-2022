@@ -1,8 +1,7 @@
 from pathlib import Path
 
 def calories(file = None):
-    if not file:
-        file = Path(__file__).parent / "input.txt"
+    file = file or Path(__file__).parent / "input.txt"
 
     elf_calories = [0]
     with open(file) as f:
