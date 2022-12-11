@@ -33,4 +33,4 @@ def day10(file=None):
 
 test_file = Path(__file__).parent / "test.txt"
 assert day10(test_file) == 13140
-print(day10())
+print("Part1: ", day10())
