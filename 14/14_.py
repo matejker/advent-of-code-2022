@@ -2,7 +2,7 @@ from pathlib import Path
 
 STARTING_POINT = (500, 0)
 
-def day14(file=None, infinite=False):
+def day14(file=None):
     file = file or Path(__file__).parent / "input.txt"
 
     n, m = 0, 0
@@ -25,10 +25,6 @@ def day14(file=None, infinite=False):
                 m_min = min(m_min, int(_y))
                 n_min = min(n_min, int(_x))
 
-    if infinite:
-        m = m + 2
-        n = n + m
-        rock_lines.append([(0, m), (n, m)])
 
     matrix = [["." for _ in range(n + 1)] for _ in range(m + 1)]
     # Draw rock lines
@@ -46,42 +42,67 @@ def day14(file=None, infinite=False):
 
     def show_matrix():
         for mm in matrix:
-            print("".join(mm[:]))
+            print("".join(mm[493:]))
 
-    # matrix[STARTING_POINT[1]][STARTING_POINT[0]] = "+"
+    matrix[STARTING_POINT[1]][STARTING_POINT[0]] = "+"
 
-    def sand(x, y):
+    def action(x, y):
         if len(matrix) - 1 == x and matrix[x][y] == ".":
             raise Exception("Found the end")
 
-        if matrix[x][y] == ".":
-            if matrix[x + 1][y] == ".": # fall
-                return sand(x + 1, y)
-            if matrix[x + 1][y - 1] in ("o", "#"):
-                if matrix[x + 1][y + 1] in ("o", "#"):
-                    return x, y
-                else:
-                    return sand(x + 1, y + 1)
+        if matrix[x][y] == "o":
+            if matrix[x][y - 1] == ".":
+                return action(x + 1, y - 1)
+            elif matrix[x][y + 1] == ".":
+                return action(x + 1, y + 1)
             else:
-                return sand(x + 1, y - 1)
+                return x - 1, y
 
-    while True:
+        if matrix[x][y] == ".":
+            return action(x + 1, y)
+
+        if matrix[x][y] == "#":
+            return x - 1, y
+
+
+    def action2(x, y):
+        if len(matrix) - 1 == x and matrix[x][y] == ".":
+            raise Exception("Found the end")
+
+        if matrix[x][y] in ("o", "#"):
+            if 8 < x:
+                return x - 1, y
+
+            print(matrix[x][y], matrix[x + 1][y - 1], matrix[x + 1][y + 1])
+
+            if matrix[x + 1][y - 1] == ".":
+                print(x, y, "left")
+                return action2(x + 1, y - 1)
+            elif matrix[x + 1][y + 1] == ".":
+                print(x, y, "right")
+                return action2(x + 1, y + 1)
+            return x - 1, y
+
+        if matrix[x][y] == ".":
+            print(matrix[x][y])
+            return action2(x + 1, y)
+
+    t = True
+    while t:
+        # for i in range(1, len(matrix[0])):
         try:
-            _x, _y = sand(0, 500)
+            _x, _y = action2(1, 500)
         except Exception as e:
+            print(f"{e!r}")
+            print(units_of_sand)
             break
 
         matrix[_x][_y] = "o"
         units_of_sand += 1
-
-    # show_matrix()
+        print("")
+        show_matrix()
 
     return units_of_sand
 
-
 test_file = Path(__file__).parent / "test.txt"
-assert day14(test_file) == 24
-assert day14(test_file, infinite=True) == 93
-
-print("Part 1:", day14())
-print("Part 2:", day14(infinite=True))
+assert day14(test_file) == 0
