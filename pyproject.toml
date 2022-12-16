@@ -8,6 +8,7 @@ authors = ["Matej Kerekrety <matej.kerekrety@gmail.com>"]
 python = ">=3.8,<3.11"
 glom = "^22.1.0"
 ipython = "^8.7.0"
+matplotlib = "^3.6.2"
 
 [tool.poetry.dev-dependencies]
 
